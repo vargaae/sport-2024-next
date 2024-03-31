@@ -2,6 +2,7 @@ import type { Action, ThunkAction } from "@reduxjs/toolkit";
 import { combineSlices, configureStore } from "@reduxjs/toolkit";
 import { counterSlice } from "./features/counter/counterSlice";
 import { quotesApiSlice } from "./features/quotes/quotesApiSlice";
+import { footballApi } from "@/app/api/football/route";
 
 // `combineSlices` automatically combines the reducers using
 // their `reducerPath`s, therefore we no longer need to call `combineReducers`.
@@ -15,11 +16,15 @@ export type RootState = ReturnType<typeof rootReducer>;
 // are needed for each request to prevent cross-request state pollution.
 export const makeStore = () => {
   return configureStore({
-    reducer: rootReducer,
+    // reducer: rootReducer,
+    reducer: {
+      [footballApi.reducerPath]: footballApi.reducer,
+    },
     // Adding the api middleware enables caching, invalidation, polling,
     // and other useful features of `rtk-query`.
     middleware: (getDefaultMiddleware) => {
-      return getDefaultMiddleware().concat(quotesApiSlice.middleware);
+      // return getDefaultMiddleware().concat(quotesApiSlice.middleware);
+      return getDefaultMiddleware().concat(footballApi.middleware);
     },
   });
 };
